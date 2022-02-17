@@ -16,21 +16,28 @@ class Play(commands.Cog):
         if os.path.exists(filename):
             await vc.join_and_play(ctx.author.voice.channel, filename)
         elif "http" in sound:
+            voice_state = ctx.author.voice
 
-            ydl_opts = {
-                'format': 'bestaudio/best',
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '96',
-                }],
-                'outtmpl':f"sounds/" + '/1.%(ext)s',
-            }
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([sound])
-            filename = f"sounds/1.mp3"
-            if os.path.exists(filename):
-                await vc.join_and_play(ctx.author.voice.channel, filename)
+            if voice_state is None:
+                # Exiting if the user is not in a voice channel
+                return await ctx.send(f"get in a channel idiot")
+            else:
+
+                ydl_opts = {
+                    'format': 'bestaudio/best',
+                    'postprocessors': [{
+                        'key': 'FFmpegExtractAudio',
+                        'preferredcodec': 'mp3',
+                        'preferredquality': '96',
+                    }],
+                    'outtmpl':f"sounds/" + '/1.%(ext)s',
+                }
+                with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([sound])
+                filename = f"sounds/1.mp3"
+                if os.path.exists(filename):
+                    await vc.join_and_play(ctx.author.voice.channel, filename)
+
 
 
         else:
@@ -47,9 +54,6 @@ class Play(commands.Cog):
 
     @commands.command(name='stop', description='Stops music', pass_context=True)
     async def stop(self, ctx):
-        for x in client.voice_clients:
-            if (x.server == ctx.message.server):
-                await client.say("Ok")
-                return await x.disconnect()
-
-        return await client.say("Im fuckin DEAD")
+        await ctx.send("Im fuckin DEAD")
+        server = ctx.message.guild.voice_client
+        await server.disconnect()
