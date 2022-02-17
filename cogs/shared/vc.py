@@ -18,6 +18,7 @@ async def join_and_play(channel, file):
     """
     async with VC_LOCK:
         conn = await channel.connect()
+        # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
         conn.play(discord.FFmpegPCMAudio(file))
 
         # check every half second if the audio is done playing
@@ -26,4 +27,5 @@ async def join_and_play(channel, file):
 
         conn.stop()
         await conn.disconnect()
+
 
