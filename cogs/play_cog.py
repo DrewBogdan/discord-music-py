@@ -5,6 +5,9 @@ from discord import client
 from discord.ext import commands
 from .shared import vc
 import youtube_dl
+import yt_dlp
+import asyncio
+
 
 class Play(commands.Cog):
     def __init__(self, bot) -> None:
@@ -24,19 +27,21 @@ class Play(commands.Cog):
             else:
 
                 ydl_opts = {
-                    'format': 'bestaudio/best',
+                    'format': 'bestaudio',
                     'postprocessors': [{
                         'key': 'FFmpegExtractAudio',
                         'preferredcodec': 'mp3',
-                        'preferredquality': '96',
+                        'preferredquality': '192',
                     }],
                     'outtmpl':f"sounds/" + '/1.%(ext)s',
                 }
-                with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     ydl.download([sound])
                 filename = f"sounds/1.mp3"
                 if os.path.exists(filename):
                     await vc.join_and_play(ctx.author.voice.channel, filename)
+                    asyncio.sleep(5)
+                    os.remove("sounds/1.mp3")
 
 
 
