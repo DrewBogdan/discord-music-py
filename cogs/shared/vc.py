@@ -1,0 +1,29 @@
+'''
+Utilities for interacting with voice channels
+'''
+
+import asyncio
+import discord
+
+VC_LOCK = asyncio.Lock()
+
+async def join_and_play(channel, file):
+    """
+    Connects to the given voice channel, playing the given .mp3 file
+    over voice, before disconnecting
+
+    Args:
+        channel (VoiceChannel): Voice Channel to connect to
+        file (str): path to .mp3 file to play
+    """
+    async with VC_LOCK:
+        conn = await channel.connect()
+        conn.play(discord.FFmpegPCMAudio(file))
+
+        # check every half second if the audio is done playing
+        while conn.is_playing():
+            await asyncio.sleep(0.5)
+
+        conn.stop()
+        await conn.disconnect()
+
