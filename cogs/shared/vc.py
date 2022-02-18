@@ -9,7 +9,6 @@ import discord
 
 VC_LOCK = asyncio.Lock()
 
-files_to_play = []
 
 async def join_and_play(channel, file):
     """
