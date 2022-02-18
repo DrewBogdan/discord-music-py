@@ -20,6 +20,7 @@ async def join_and_play(channel, file):
         file (str): path to .mp3 file to play
     """
 
+
     async with VC_LOCK:
         conn = await channel.connect()
         # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
@@ -32,6 +33,6 @@ async def join_and_play(channel, file):
 
         conn.stop()
         await conn.disconnect()
-        os.remove(file)
+        VC_LOCK.release()
 
 
