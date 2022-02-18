@@ -54,14 +54,6 @@ class Play(commands.Cog):
         server = ctx.message.guild.voice_client
         await server.disconnect()
 
-    @commands.command(name='gotobed', description='Sends the bot away', pass_context=True)
-    async def stop(self, ctx):
-        if ctx.author == "230106342994608129":
-            await ctx.send(":sleeping_accommodation:")
-            self.playing = False
-            server = ctx.message.guild.voice_client
-            await server.disconnect()
-            sys.exit()
 
     async def download(self, url, ctx):
         # the idea of this part is to download them once
