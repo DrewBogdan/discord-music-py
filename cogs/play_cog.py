@@ -33,15 +33,21 @@ class Play(commands.Cog):
                         'preferredcodec': 'mp3',
                         'preferredquality': '192',
                     }],
-                    'outtmpl':f"sounds/" + '/1.%(ext)s',
+                    'outtmpl':f"sounds" + '/%(title)s.%(ext)s',
                 }
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([sound])
-                filename = f"sounds/1.mp3"
+                    info = ydl.extract_info(sound, download=True)
+                    file = ydl.prepare_filename(info).split("\\")[1]
+                    filename = f"sounds/" + file.split(".webm")[0] + ".mp3"
+
+
                 if os.path.exists(filename):
+                    await ctx.send("Joining")
                     await vc.join_and_play(ctx.author.voice.channel, filename)
-                    asyncio.sleep(5)
-                    os.remove("sounds/1.mp3")
+
+                else:
+                    await ctx.send("Shits broke")
+
 
 
 

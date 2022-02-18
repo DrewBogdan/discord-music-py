@@ -3,9 +3,13 @@ Utilities for interacting with voice channels
 '''
 
 import asyncio
+import os
+
 import discord
 
 VC_LOCK = asyncio.Lock()
+
+files_to_play = []
 
 async def join_and_play(channel, file):
     """
@@ -16,6 +20,7 @@ async def join_and_play(channel, file):
         channel (VoiceChannel): Voice Channel to connect to
         file (str): path to .mp3 file to play
     """
+
     async with VC_LOCK:
         conn = await channel.connect()
         # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
@@ -25,7 +30,9 @@ async def join_and_play(channel, file):
         while conn.is_playing():
             await asyncio.sleep(0.5)
 
+
         conn.stop()
         await conn.disconnect()
+        os.remove(file)
 
 
