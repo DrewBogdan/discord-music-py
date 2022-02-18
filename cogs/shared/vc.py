@@ -8,7 +8,7 @@ import os
 import discord
 
 VC_LOCK = asyncio.Lock()
-
+Skip = False
 
 async def join_and_play(channel, file):
     """
@@ -28,7 +28,8 @@ async def join_and_play(channel, file):
 
         # check every half second if the audio is done playing
         while conn.is_playing():
-            await asyncio.sleep(0.5)
+            if skip == False:
+                await asyncio.sleep(0.5)
 
 
         conn.stop()
@@ -36,3 +37,5 @@ async def join_and_play(channel, file):
         VC_LOCK.release()
 
 
+async def skip():
+    skip = True

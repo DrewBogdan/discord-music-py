@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 import os
+import sys
+
 import discord
 from discord import client
 from discord.ext import commands
@@ -28,7 +30,6 @@ class Play(commands.Cog):
             # gets the link downloaded
             filename = await self.download(sound, ctx)
             await vc.join_and_play(ctx.author.voice.channel, filename)
-            pass
         else:
             # check for file in the sounds folder
             filename = f"sounds/{sound}.mp3"
@@ -52,6 +53,15 @@ class Play(commands.Cog):
         self.playing = False
         server = ctx.message.guild.voice_client
         await server.disconnect()
+
+    @commands.command(name='gotobed', description='Sends the bot away', pass_context=True)
+    async def stop(self, ctx):
+        if ctx.author == "230106342994608129":
+            await ctx.send(":sleeping_accommodation:")
+            self.playing = False
+            server = ctx.message.guild.voice_client
+            await server.disconnect()
+            sys.exit()
 
     async def download(self, url, ctx):
         # the idea of this part is to download them once
