@@ -28,8 +28,7 @@ async def join_and_play(channel, file):
 
         # check every half second if the audio is done playing
         while conn.is_playing():
-            if skip == False:
-                await asyncio.sleep(0.5)
+            await asyncio.sleep(0.5)
 
 
         conn.stop()
