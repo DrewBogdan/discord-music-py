@@ -15,12 +15,13 @@ class Util(commands.Cog):
 
     @commands.command(name='gotobed', description='Sends the bot away', pass_context=True)
     async def kill(self, ctx):
-        if ctx.author == "230106342994608129":
+        if ctx.author == "Decipherter#6969":
             await ctx.send(":sleeping_accommodation:")
             self.playing = False
             server = ctx.message.guild.voice_client
             await server.disconnect()
             sys.exit()
+        await ctx.send("Your not drew")
 
 
 

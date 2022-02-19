@@ -54,6 +54,11 @@ class Play(commands.Cog):
         server = ctx.message.guild.voice_client
         await server.disconnect()
 
+    @commands.command(name='skip', description='skips song', pass_context=True)
+    async def skip(self, ctx):
+        await ctx.send("Attempting to skip")
+        await vc.skip(ctx.author.voice.channel)
+
 
     async def download(self, url, ctx):
         # the idea of this part is to download them once

@@ -10,6 +10,8 @@ import discord
 VC_LOCK = asyncio.Lock()
 Skip = False
 
+
+
 async def join_and_play(channel, file):
     """
     Connects to the given voice channel, playing the given .mp3 file
@@ -19,7 +21,6 @@ async def join_and_play(channel, file):
         channel (VoiceChannel): Voice Channel to connect to
         file (str): path to .mp3 file to play
     """
-
 
     async with VC_LOCK:
         conn = await channel.connect()
@@ -33,8 +34,8 @@ async def join_and_play(channel, file):
 
         conn.stop()
         await conn.disconnect()
-        VC_LOCK.release()
 
 
-async def skip():
-    skip = True
+async def skip(channel):
+    if channel.is_playing():
+        channel.stop()
