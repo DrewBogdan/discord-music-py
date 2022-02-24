@@ -30,6 +30,7 @@ class Play(commands.Cog):
             # gets the link downloaded
             filename = await self.download(sound, ctx)
             await vc.join_and_play(ctx.author.voice.channel, filename)
+            os.remove(filename)
         else:
             # check for file in the sounds folder
             filename = f"sounds/{sound}.mp3"
@@ -58,6 +59,7 @@ class Play(commands.Cog):
     async def skip(self, ctx):
         await ctx.send("Attempting to skip")
         await vc.skip(ctx.author.voice.channel)
+
 
 
     async def download(self, url, ctx):

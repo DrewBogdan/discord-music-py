@@ -31,7 +31,6 @@ async def join_and_play(channel, file):
         while conn.is_playing():
             await asyncio.sleep(0.5)
 
-
         conn.stop()
         await conn.disconnect()
 
