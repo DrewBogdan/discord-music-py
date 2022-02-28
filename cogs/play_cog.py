@@ -1,14 +1,7 @@
 from __future__ import unicode_literals
 import os
-import sys
-
-import discord
-from discord import client
 from discord.ext import commands
-from .shared import vc
-import youtube_dl
-import yt_dlp
-import asyncio
+from .shared import vc, utils
 
 
 class Play(commands.Cog):
@@ -19,8 +12,8 @@ class Play(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
 
-    @commands.command(name='play', description='play a sound, new version', pass_context=True)
-    async def play(self, ctx, sound):
+    @commands.command(name='play', description='play a sound, new version', pass_context=True, aliases=['p'])
+    async def play(self, ctx, *, sound: str):
         voice_state = ctx.author.voice
 
         if voice_state is None:
@@ -28,7 +21,7 @@ class Play(commands.Cog):
             return await ctx.send(f"get in a channel idiot")
         elif "https" in sound:
             # gets the link downloaded
-            filename = await self.download(sound, ctx)
+            filename = await utils.download(sound, ctx)
             await vc.join_and_play(ctx.author.voice.channel, filename)
             os.remove(filename)
         else:
@@ -37,7 +30,12 @@ class Play(commands.Cog):
             if os.path.exists(filename):
                 await vc.join_and_play(ctx.author.voice.channel, filename)
             else:
-                await ctx.send("Invalid Name Dumbass")
+                url = await utils.get_url(sound)
+                await ctx.send("Search result: ")
+                if url is not None:
+                    filename = await utils.download(sound, ctx)
+                    await vc.join_and_play(ctx.author.voice.channel, filename)
+                    os.remove(filename)
 
     @commands.command(name='sounds', description='List availible sounds', pass_context=True)
     async def list(self, ctx):
@@ -48,38 +46,21 @@ class Play(commands.Cog):
         res += "```"
         await ctx.send(res)
 
-    @commands.command(name='stop', description='Stops music', pass_context=True)
-    async def stop(self, ctx):
-        await ctx.send("Im fuckin DEAD")
+    @commands.command(name='skip', description='Skips song', pass_context=True)
+    async def skip(self, ctx):
+        await ctx.send("Skipping current song")
         self.playing = False
         server = ctx.message.guild.voice_client
         await server.disconnect()
 
+    """
     @commands.command(name='skip', description='skips song', pass_context=True)
     async def skip(self, ctx):
         await ctx.send("Attempting to skip")
         await vc.skip(ctx.author.voice.channel)
+    """
 
 
 
-    async def download(self, url, ctx):
-        # the idea of this part is to download them once
-        # they are added to the queue so when it runs into the main
-        # play function its quicker
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '320',
-            }],
-            'outtmpl': f"sounds" + '/%(title)s.%(ext)s',
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            file = ydl.prepare_filename(info).split("\\")[1]
-            name = file.split(".webm")[0]
-            await ctx.send("Queuing " + name)
-            return f"sounds/" + name + ".mp3"
 
 
