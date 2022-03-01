@@ -31,9 +31,9 @@ class Play(commands.Cog):
                 await vc.join_and_play(ctx.author.voice.channel, filename)
             else:
                 url = await utils.get_url(sound)
-                await ctx.send("Search result: ")
                 if url is not None:
-                    filename = await utils.download(sound, ctx)
+                    await ctx.send("Result Found. Preparing...")
+                    filename = await utils.download(url, ctx)
                     await vc.join_and_play(ctx.author.voice.channel, filename)
                     os.remove(filename)
 

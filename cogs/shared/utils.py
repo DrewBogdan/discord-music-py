@@ -1,20 +1,20 @@
 import re
+import urllib
 import yt_dlp
 
 
 async def get_url(content):
+    search_keyword = ""
+    parsed = content.split(" ")
+    for string in parsed:
+        if search_keyword == "":
+            search_keyword += string
+        else:
+            search_keyword += "_" + string
 
-    regex = re.compile(
-        "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
-
-    if re.search(regex, content):
-        result = regex.search(content)
-        url = result.group(0)
-        print(url)
-        return url
-    else:
-        return None
-
+    html = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + search_keyword)
+    video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
+    return "https://www.youtube.com/watch?v=" + video_ids[0]
 
 async def download(url, ctx):
     # the idea of this part is to download them once
