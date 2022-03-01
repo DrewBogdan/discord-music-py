@@ -16,10 +16,20 @@ class Responses(commands.Cog):
 
         if message.content.lower().startswith('hello'):
             await message.channel.send('Hello?')
-        if message.content.lower().startswith('fuck off'):
+        elif message.content.lower().startswith('fuck off'):
             await message.channel.send('How about no?')
-        if message.content.lower().startswith('fuck you'):
+        elif message.content.lower().startswith('fuck you'):
             await message.channel.send('Fuck you!')
+        elif message.content.lower().startswith('fuck'):
+            await message.channel.send('me?')
+        if message.content.lower().startswith('?'):
+            rand = random.randint(0, 100)
+            if rand <= 30:
+                await message.channel.send('Clearly, he said that you are gay, Get ratio\'d kid')
+            if 30 < rand <= 60:
+                await message.channel.send('Read the chat dumbass')
+            if 60 < rand < 100:
+                await message.channel.send('Are you blind?')
         if message.content.lower().startswith('wucka') or message.content.lower().startswith('woka'):
             rand = random.randint(0,100)
             if rand <= 30:
