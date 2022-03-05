@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import os
 from discord.ext import commands
-from .shared import vc, utils
+from .shared import vc, utils, queue
 
 
 class Play(commands.Cog):
@@ -34,7 +34,7 @@ class Play(commands.Cog):
                 if url is not None:
                     await ctx.send("Result Found. Preparing...")
                     filename = await utils.download(url, ctx)
-                    await vc.join_and_play(ctx.author.voice.channel, filename)
+                    await vc.play(ctx.author.voice.channel, filename)
                     os.remove(filename)
 
     @commands.command(name='sounds', description='List availible sounds', pass_context=True)
@@ -53,7 +53,14 @@ class Play(commands.Cog):
         server = ctx.message.guild.voice_client
         await server.disconnect()
 
+    @commands.command(name='queue', description='prints song queue', pass_context=True, aliases=['q'])
+    async def queue(self, ctx):
+        await ctx.send("Current Queue:")
+        await ctx.send("-------------------------------------------------")
+        await queue.print_queue(ctx)
+
     """
+    
     @commands.command(name='skip', description='skips song', pass_context=True)
     async def skip(self, ctx):
         await ctx.send("Attempting to skip")
