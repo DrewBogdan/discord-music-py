@@ -62,7 +62,7 @@ class Responses(commands.Cog):
                 await message.channel.send('I\'m busy with your mom, give me a sec')
             if 90 <= rand < 100:
                 await message.channel.send(':|')
-                await vc.join_and_play(message.author.voice.channel, "sounds/ugly.mp3")
+                await vc.play(message.author.voice.channel, "sounds/ugly.mp3")
             if rand == 100:
                 await message.channel.send('YOU DARE SUMMON ME?')
             if rand == 101:
@@ -73,5 +73,5 @@ class Responses(commands.Cog):
         if message.content.lower().__contains__('uninstall'):
             await message.channel.send('I gotta uninstall my dick from your mom first')
         if message.content.lower().__contains__('creeper'):
-            await vc.join_and_play(message.author.voice.channel, "sounds/creeper.mp3")
+            await vc.play(message.author.voice.channel, "sounds/creeper.mp3")
 

@@ -5,8 +5,8 @@ import asyncio
 import discord
 from discord import client
 from discord.ext import commands
+from .shared import vc, queue
 
-from .shared import vc
 
 class Util(commands.Cog):
 
@@ -19,6 +19,7 @@ class Util(commands.Cog):
             await ctx.send(":sleeping_accommodation:")
             self.playing = False
             server = ctx.message.guild.voice_client
+            await queue.clear_queue()
             if server is not None:
                 server.disconnect()
             sys.exit()
