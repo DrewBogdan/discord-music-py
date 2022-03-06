@@ -23,14 +23,19 @@ async def play(channel, file):
     print("added")
     if queue.songs():
         print("queueing")
-        await queue.add_to_queue(file)
+        queue.add_to_queue(file)
     else:
         print("playing")
-        await queue.add_to_queue(file)
+        if file is not None:
+            queue.add_to_queue(file)
         async with VC_LOCK:
             playing = True
             conn = await channel.connect()
             while playing:
+                try:
+                    conn = await channel.connect()
+                except discord.errors.ClientException:
+                    pass
                 cur_file = queue.get_top()
                 # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
                 conn.play(discord.FFmpegPCMAudio(cur_file))

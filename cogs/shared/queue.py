@@ -12,9 +12,9 @@ Q_LOCK = asyncio.Lock()
 queue = []
 
 
-async def add_to_queue(file):
-    async with Q_LOCK:
-        queue.append(file)
+def add_to_queue(file):
+    #async with Q_LOCK:
+    queue.append(file)
 
 
 async def remove_from_queue(index):
@@ -57,7 +57,10 @@ async def clear_queue():
         for val in queue:
             queue.remove(val)
             if val != "sounds/minecraft.mp3" and val != "sounds/music.mp3" and val != "sounds/creeper.mp3" and val != "sounds/ugly.mp3":
-                os.remove(val)
+                try:
+                    os.remove(val)
+                except PermissionError:
+                    pass
 
 
 async def shuffle():

@@ -1,9 +1,10 @@
 import re
 import urllib
 import yt_dlp
+from . import queue
 
 
-async def get_url(content):
+def get_url(content):
     search_keyword = ""
     parsed = content.split(" ")
     for string in parsed:
@@ -11,10 +12,14 @@ async def get_url(content):
             search_keyword += string
         else:
             search_keyword += "_" + string
-
-    html = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + search_keyword)
-    video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
-    return "https://www.youtube.com/watch?v=" + video_ids[0]
+    try:
+        url = "https://www.youtube.com/results?search_query=" + search_keyword
+        html = urllib.request.urlopen(url)
+        video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
+        if len(video_ids) > 0:
+            return "https://www.youtube.com/watch?v=" + video_ids[0]
+    except UnicodeEncodeError:
+        pass
 
 
 def download(url, ctx, print_message=True):
@@ -35,3 +40,13 @@ def download(url, ctx, print_message=True):
         file = ydl.prepare_filename(info).split("\\")[1]
         name = file.split(".webm")[0]
         return f"sounds/" + name + ".mp3"
+
+
+def background_download(track):
+    for val in track:
+        url = get_url(val)
+        if url is not None:
+            filename = download(url, None, False)
+            queue.add_to_queue(filename)
+
+

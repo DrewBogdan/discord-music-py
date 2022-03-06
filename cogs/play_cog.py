@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 import os
+import threading
+
 from discord.ext import commands
 from .shared import vc, utils, queue,spotify_queuer
 
@@ -24,13 +26,25 @@ class Play(commands.Cog):
             # gets the link downloaded
             if "open.spotify.com" in sound:
                 tracks = await spotify_queuer.play_playlist(sound)
-                for val in tracks:
-                    url = await utils.get_url(val)
+                url = utils.get_url(tracks[0])
+                filename = ""
+                if url is not None:
                     filename = utils.download(url, ctx, False)
+                tracks.remove(tracks[0])
+                track_list = []
+                length = int(len(tracks))//6
+                for x in range(len(tracks)):
+                    track_list.append(tracks[x])
+                    if x % length == 0 and x != 0:
+                        download_thread = threading.Thread(target=utils.background_download, name="Downloader", args=(track_list,))
+                        download_thread.start()
+                        track_list = []
+                if url is not None:
                     await vc.play(ctx.author.voice.channel, filename)
 
+
             else:
-                filename = await utils.download(sound, ctx)
+                filename = utils.download(sound, ctx)
                 await ctx.send("Queuing " + (os.path.splitext(filename)[0]).split("sounds/")[1])
                 await vc.play(ctx.author.voice.channel, filename)
 
@@ -42,7 +56,7 @@ class Play(commands.Cog):
                 await vc.play(ctx.author.voice.channel, filename)
 
             else:
-                url = await utils.get_url(sound)
+                url = utils.get_url(sound)
 
                 if url is not None:
                     await ctx.send("Result Found. Preparing...")
@@ -87,6 +101,10 @@ class Play(commands.Cog):
         else:
             await ctx.send("Invalid")
 
+    @commands.command(name='shuffle', description='shuffles queue', pass_context=True)
+    async def shuffle(self, ctx):
+        await queue.shuffle()
+        await ctx.send(":thumbsup:")
 
 
 
