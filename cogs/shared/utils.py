@@ -16,7 +16,8 @@ async def get_url(content):
     video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
     return "https://www.youtube.com/watch?v=" + video_ids[0]
 
-async def download(url, ctx):
+
+def download(url, ctx, print_message=True):
     # the idea of this part is to download them once
     # they are added to the queue so when it runs into the main
     # play function its quicker
@@ -33,5 +34,4 @@ async def download(url, ctx):
         info = ydl.extract_info(url, download=True)
         file = ydl.prepare_filename(info).split("\\")[1]
         name = file.split(".webm")[0]
-        await ctx.send("Queuing " + name)
         return f"sounds/" + name + ".mp3"

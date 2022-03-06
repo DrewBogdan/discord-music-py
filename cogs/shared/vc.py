@@ -35,7 +35,7 @@ async def play(channel, file):
                 # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
                 conn.play(discord.FFmpegPCMAudio(cur_file))
                 # check every half second if the audio is done playing
-                while conn.is_playing() and not await skipped():
+                while conn.is_playing():
                     await asyncio.sleep(0.5)
                 Skip = False
                 conn.stop()
@@ -44,14 +44,6 @@ async def play(channel, file):
                     playing = False
 
             await conn.disconnect()
-
-
-async def skipped():
-    return Skip
-
-
-async def skip():
-    Skip = True
 
 
 """

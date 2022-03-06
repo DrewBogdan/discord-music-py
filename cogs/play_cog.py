@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import os
 from discord.ext import commands
-from .shared import vc, utils, queue
+from .shared import vc, utils, queue,spotify_queuer
 
 
 class Play(commands.Cog):
@@ -23,10 +23,15 @@ class Play(commands.Cog):
         elif "https" in sound:
             # gets the link downloaded
             if "open.spotify.com" in sound:
-                await ctx.send("That is a spotify playlist")
+                tracks = await spotify_queuer.play_playlist(sound)
+                for val in tracks:
+                    url = await utils.get_url(val)
+                    filename = utils.download(url, ctx, False)
+                    await vc.play(ctx.author.voice.channel, filename)
 
             else:
                 filename = await utils.download(sound, ctx)
+                await ctx.send("Queuing " + (os.path.splitext(filename)[0]).split("sounds/")[1])
                 await vc.play(ctx.author.voice.channel, filename)
 
         else:
@@ -41,7 +46,8 @@ class Play(commands.Cog):
 
                 if url is not None:
                     await ctx.send("Result Found. Preparing...")
-                    filename = await utils.download(url, ctx)
+                    filename = utils.download(url, ctx)
+                    await ctx.send("Queuing " + (os.path.splitext(filename)[0]).split("sounds/")[1])
                     await vc.play(ctx.author.voice.channel, filename)
 
     @commands.command(name='sounds', description='List availible sounds', pass_context=True)
