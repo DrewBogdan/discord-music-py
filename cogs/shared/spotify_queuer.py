@@ -22,7 +22,7 @@ async def get_tracks(id):
 
     spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=config.SPOTIFY_ID, client_secret=config.SPOTIFY_SECRET))
 
-    tracks = spotify.playlist_items(id_string)
+    tracks = spotify.playlist_items(id_string, limit=200)
 
     parsed_tracks = []
     for i, item in enumerate(tracks['items']):

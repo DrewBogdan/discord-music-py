@@ -106,6 +106,25 @@ class Play(commands.Cog):
         await queue.shuffle()
         await ctx.send(":thumbsup:")
 
+    @commands.command(name='top', description='queues to the top', pass_context=True)
+    async def top(self, ctx, *, sound: str):
+        url = utils.get_url(sound)
+        filename = ""
+        if url is not None:
+            filename = utils.download(url, ctx, False)
+        queue.queue.insert(1, filename)
+
+    @commands.command(name='move', description='moves 2 indexes', pass_context=True)
+    async def mov(self, ctx, *, sound: str):
+        indexs = sound.split(" ")
+        index1 = indexs[0]
+        index2 = indexs[1]
+        temp = queue.queue[index1]
+        queue.queue[index1] = queue.queue[index2]
+        queue.queue[index2] = temp
+
+
+
 
 
 
