@@ -116,13 +116,16 @@ class Play(commands.Cog):
 
     @commands.command(name='move', description='moves 2 indexes', pass_context=True)
     async def mov(self, ctx, *, sound: str):
-        indexs = sound.split(" ")
-        index1 = indexs[0]
-        index2 = indexs[1]
-        temp = queue.queue[index1]
-        queue.queue[index1] = queue.queue[index2]
-        queue.queue[index2] = temp
-
+        try:
+            indexs = sound.split(" ")
+            index1 = int(indexs[0])
+            index2 = int(indexs[1])
+            temp = queue.queue[index1]
+            queue.queue[index1] = queue.queue[index2]
+            queue.queue[index2] = temp
+            await ctx.send("Moved Successfully")
+        except TypeError:
+            await ctx.send("Your slow")
 
 
 
