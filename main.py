@@ -6,6 +6,11 @@ from cogs import play_cog
 from cogs import util_cog
 from cogs import response_cog
 
+"""
+This Reference Code given by 
+Rafi Bayer
+"""
+
 class MusicBot(Bot):
     def __init__(self, command_prefix, **options):
         super().__init__(command_prefix, **options)

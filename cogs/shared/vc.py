@@ -54,7 +54,9 @@ async def play(channel, name):
 """
 Sunset'd join and play code.
 Kept for research and reference
-created by Rafi B
+
+This Reference Code given by 
+Rafi Bayer
 """
 
 
