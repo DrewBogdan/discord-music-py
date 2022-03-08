@@ -38,8 +38,7 @@ Currently the bot's main function is to play music. It does this in a variety of
 * One way it does this is if I add in a mp3 file to the sounds folder, It will play it when i run a command and give the files name, 
 * Another way, is you can give the bot a youtube link, and it will download the song and play the mp3. 
 * You can also just type the name of a song and it will read the name, search for it on youtube, get the top result, then download it and play it
-* Lastly, the bot can take a spotify playlist link, and read all the songs and their respective artists and search for them on youtube. 
-  * From this it will add all the song names to the queue and have them ready to play
+* Lastly, the bot can take a spotify playlist link, and read all the songs and their respective artists and search for them on youtube. From this it will add all the song names to the queue and have them ready to play
 
 The bot has a queue functionality with it aswel that is built to handle any number of songs being played at once. It does
 this by queuing up the names for songs, then as the queue is being walked through, the top 3 songs of the queue are being
