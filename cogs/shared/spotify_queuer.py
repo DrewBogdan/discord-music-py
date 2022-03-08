@@ -22,10 +22,12 @@ async def get_tracks(id):
 
     spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=config.SPOTIFY_ID, client_secret=config.SPOTIFY_SECRET))
 
-    tracks = spotify.playlist_items(id_string, limit=200)
+    res = spotify.playlist_items(id_string, limit=100)
+
+    tracks = get_playlist_tracks(res, spotify)
 
     parsed_tracks = []
-    for i, item in enumerate(tracks['items']):
+    for item in tracks:
         search_term = ""
         search_term += (item['track']['name']) + " "  # name of the track
         search_term += (item['track']['artists'][0]['name'])  # artist of the track
@@ -36,4 +38,12 @@ async def get_tracks(id):
 async def play_playlist(url):
     id = await parser(url)
     tracks = await get_tracks(id)
+    return tracks
+
+
+def get_playlist_tracks(results, spotify):
+    tracks = results['items']
+    while results['next']:
+        results = spotify.next(results)
+        tracks.extend(results['items'])
     return tracks

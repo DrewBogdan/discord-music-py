@@ -25,44 +25,44 @@ class Play(commands.Cog):
         elif "https" in sound:
             # gets the link downloaded
             if "open.spotify.com" in sound:
+
                 tracks = await spotify_queuer.play_playlist(sound)
                 url = utils.get_url(tracks[0])
-                filename = ""
-                if url is not None:
-                    filename = utils.download(url, ctx, False)
+                title = utils.get_title(url)
                 tracks.remove(tracks[0])
-                track_list = []
-                length = int(len(tracks))//6
-                for x in range(len(tracks)):
-                    track_list.append(tracks[x])
-                    if x % length == 0 and x != 0:
-                        download_thread = threading.Thread(target=utils.background_download, name="Downloader", args=(track_list,))
-                        download_thread.start()
-                        track_list = []
+                for val in tracks:
+                    url_thread = threading.Thread(target=utils.add_urls, name="Url Adder",
+                                                   args=([val],))
+                    url_thread.start()
                 if url is not None:
-                    await vc.play(ctx.author.voice.channel, filename)
+                    await vc.play(ctx.author.voice.channel, title)
 
 
             else:
-                filename = utils.download(sound, ctx)
-                await ctx.send("Queuing " + (os.path.splitext(filename)[0]).split("sounds/")[1])
-                await vc.play(ctx.author.voice.channel, filename)
+
+                url = utils.get_url(sound)
+                if url is not None:
+                    title = utils.get_title(url)
+                    await ctx.send("Queuing " + title)
+                    await vc.play(ctx.author.voice.channel, title)
+
 
         else:
             # check for file in the sounds folder
             filename = f"sounds/{sound}.mp3"
 
             if os.path.exists(filename):
-                await vc.play(ctx.author.voice.channel, filename)
+                await vc.play(ctx.author.voice.channel, sound)
 
             else:
                 url = utils.get_url(sound)
-
                 if url is not None:
                     await ctx.send("Result Found. Preparing...")
-                    filename = utils.download(url, ctx)
-                    await ctx.send("Queuing " + (os.path.splitext(filename)[0]).split("sounds/")[1])
-                    await vc.play(ctx.author.voice.channel, filename)
+                    title = utils.get_title(url)
+                    await ctx.send("Queuing " + title)
+                    await vc.play(ctx.author.voice.channel, title)
+                else:
+                    await ctx.send("Couldn't find the song")
 
     @commands.command(name='sounds', description='List availible sounds', pass_context=True)
     async def list(self, ctx):
@@ -79,6 +79,7 @@ class Play(commands.Cog):
         self.playing = False
         server = ctx.message.guild.voice_client
         await server.disconnect()
+        await vc.play(ctx.author.voice.channel, None)
 
     @commands.command(name='stop', description='halts all playing', pass_context=True)
     async def stop(self, ctx):
@@ -109,10 +110,13 @@ class Play(commands.Cog):
     @commands.command(name='top', description='queues to the top', pass_context=True)
     async def top(self, ctx, *, sound: str):
         url = utils.get_url(sound)
-        filename = ""
         if url is not None:
-            filename = utils.download(url, ctx, False)
-        queue.queue.insert(1, filename)
+            title = utils.get_title(url)
+            queue.queue.insert(1, title)
+            utils.download(url, False)
+        else:
+            await ctx.send("Could not find song to place ontop")
+
 
     @commands.command(name='move', description='moves 2 indexes', pass_context=True)
     async def mov(self, ctx, *, sound: str):
@@ -123,6 +127,10 @@ class Play(commands.Cog):
             temp = queue.queue[index1]
             queue.queue[index1] = queue.queue[index2]
             queue.queue[index2] = temp
+            if index2 == 1:
+                url = utils.get_url(queue.queue[1])
+                if url is not None:
+                    utils.download(url, False)
             await ctx.send("Moved Successfully")
         except TypeError:
             await ctx.send("Your slow")

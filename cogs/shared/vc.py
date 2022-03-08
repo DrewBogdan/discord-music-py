@@ -8,10 +8,8 @@ from . import queue
 import discord
 
 VC_LOCK = asyncio.Lock()
-Skip = False
 
-
-async def play(channel, file):
+async def play(channel, name):
     """
     Connects to the given voice channel, playing the given .mp3 file
     over voice, before disconnecting
@@ -23,11 +21,13 @@ async def play(channel, file):
     print("added")
     if queue.songs():
         print("queueing")
-        queue.add_to_queue(file)
+        queue.add_to_queue(name)
     else:
         print("playing")
-        if file is not None:
-            queue.add_to_queue(file)
+        if name is not None:
+            queue.add_to_queue(name)
+        else:
+            await queue.remove_from_queue(0)
         async with VC_LOCK:
             playing = True
             conn = await channel.connect()
@@ -36,13 +36,12 @@ async def play(channel, file):
                     conn = await channel.connect()
                 except discord.errors.ClientException:
                     pass
-                cur_file = queue.get_top()
+                cur_file = ("sounds/" + queue.get_top() + ".mp3")
                 # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
                 conn.play(discord.FFmpegPCMAudio(cur_file))
                 # check every half second if the audio is done playing
                 while conn.is_playing():
                     await asyncio.sleep(0.5)
-                Skip = False
                 conn.stop()
                 await queue.remove_from_queue(0)
                 if not queue.songs():
@@ -51,9 +50,11 @@ async def play(channel, file):
             await conn.disconnect()
 
 
+
 """
 Sunset'd join and play code.
 Kept for research and reference
+created by Rafi B
 """
 
 

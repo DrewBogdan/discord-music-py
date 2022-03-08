@@ -22,8 +22,6 @@ class Util(commands.Cog):
             await queue.clear_queue()
             if server is not None:
                 server.disconnect()
-            for f in [filename for filename in os.listdir("sounds")]:
-                os.remove(f)
             sys.exit()
         else:
             await ctx.send("Your not drew")
