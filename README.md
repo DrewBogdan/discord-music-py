@@ -84,6 +84,8 @@ At the start of this process I was given guidance and starter code from
 the bot to play mp3's that i put in the sound folder myself, and ran the command
 for. 
 
-At this point Almost none of that refrence code exists in the program anymore, 
-but It was a big help in helping me understand how the 
+At this point Almost none of that refrence code exists in the program anymore,
+Where the remaining refrence code can be found is in main.py, the set up of the bot
+was given to me and there was no need to change it at the current build of the bot.
+but all of the refrence doe was a big help in helping me understand how the 
 discord API works, and where to start from.
