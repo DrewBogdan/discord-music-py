@@ -83,8 +83,7 @@ async def print_queue(ctx):
 
 async def clear_queue():
     async with Q_LOCK:
-        for val in queue:
-            queue.remove(val)
+        queue.clear()
 
 
 async def shuffle():

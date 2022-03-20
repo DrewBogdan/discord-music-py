@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import os
 import threading
 
+import discord.ext.commands.errors
 from discord.ext import commands
 from .shared import vc, utils, queue,spotify_queuer
 
@@ -25,17 +26,26 @@ class Play(commands.Cog):
         elif "https" in sound:
             # gets the link downloaded
             if "open.spotify.com" in sound:
+                if "playlist" in sound:
 
-                tracks = await spotify_queuer.play_playlist(sound)
-                url = utils.get_url(tracks[0])
-                title = utils.get_title(url)
-                tracks.remove(tracks[0])
-                for val in tracks:
-                    url_thread = threading.Thread(target=utils.add_urls, name="Url Adder",
-                                                   args=([val],))
-                    url_thread.start()
-                if url is not None:
-                    await vc.play(ctx.author.voice.channel, title)
+                    tracks = await spotify_queuer.play_playlist(sound)
+                    url = utils.get_url(tracks[0])
+                    title = utils.get_title(url)
+                    tracks.remove(tracks[0])
+                    for val in tracks:
+                        url_thread = threading.Thread(target=utils.add_urls, name="Url Adder",
+                                                       args=([val],))
+                        url_thread.start()
+                    if url is not None:
+                        await vc.play(ctx.author.voice.channel, title)
+
+                else:
+                    track = await spotify_queuer.play_song(sound)
+                    url = utils.get_url(track)
+                    title = utils.get_title(url)
+                    if url is not None:
+                        await vc.play(ctx.author.voice.channel, title)
+
 
 
             else:
@@ -86,7 +96,10 @@ class Play(commands.Cog):
         self.playing = False
         server = ctx.message.guild.voice_client
         await queue.clear_queue()
-        await server.disconnect()
+        try:
+            await server.disconnect()
+        except discord.ext.commands.errors.CommandInvokeError:
+            pass
 
     @commands.command(name='queue', description='prints song queue', pass_context=True, aliases=['q'])
     async def queue(self, ctx):
