@@ -17,13 +17,16 @@ queue = []
 
 def add_to_queue(name):
     #async with Q_LOCK:
-    if len(queue) == 0:
+    if len(queue) < 2:
         queue.append(name)
         url = utils.get_url(name)
 
         if url is not None:
             file = utils.download(url)
-            queue[0] = (os.path.splitext(file)[0]).split("sounds/")[1]
+            if len(queue) == 1:
+                queue[0] = (os.path.splitext(file)[0]).split("sounds/")[1]
+            else:
+                queue[1] = (os.path.splitext(file)[0]).split("sounds/")[1]
     else:
         queue.append(name)
 
