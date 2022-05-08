@@ -19,7 +19,10 @@ def add_to_queue(name):
     #async with Q_LOCK:
     if len(queue) < 2:
         queue.append(name)
-        url = utils.get_url(name)
+        if "http" not in name:
+            url = utils.get_url(name)
+        else:
+            url = name
 
         if url is not None:
             file = utils.download(url)

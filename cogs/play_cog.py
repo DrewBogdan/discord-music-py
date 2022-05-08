@@ -54,7 +54,7 @@ class Play(commands.Cog):
                 if url is not None:
                     title = utils.get_title(url)
                     await ctx.send("Queuing " + title)
-                    await vc.play(ctx.author.voice.channel, title)
+                    await vc.play(ctx.author.voice.channel, url)
 
 
         else:
