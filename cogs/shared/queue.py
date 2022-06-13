@@ -7,7 +7,7 @@ import os
 import random
 import threading
 
-from . import utils
+from . import utils, Song
 
 import discord
 
@@ -15,23 +15,20 @@ Q_LOCK = asyncio.Lock()
 queue = []
 
 
-def add_to_queue(name):
+def add_to_queue(song):
     #async with Q_LOCK:
     if len(queue) < 2:
-        queue.append(name)
-        if "http" not in name:
-            url = utils.get_url(name)
-        else:
-            url = name
+        queue.append(song)
 
-        if url is not None:
-            file = utils.download(url)
+        if song.url is not None:
+            print(song.url)
+            file = utils.download(song.url)
             if len(queue) == 1:
-                queue[0] = (os.path.splitext(file)[0]).split("sounds/")[1]
+                queue[0] = song
             else:
-                queue[1] = (os.path.splitext(file)[0]).split("sounds/")[1]
+                queue[1] = song
     else:
-        queue.append(name)
+        queue.append(song)
 
 
 async def remove_from_queue(index):
@@ -78,9 +75,9 @@ async def print_queue(ctx):
         for x in range(len(queue)):
             if x == 0:
                 # (os.path.splitext(queue[x])[0]).split("sounds/")[1] Old style of queue
-                message += ("**Current Song:** " + queue[x] + "\n")
+                message += ("**Current Song:** " + queue[x].title + "\n")
             else:
-                message += ("**" + str(x) + "**" + ": " + queue[x] + "\n")
+                message += ("**" + str(x) + "**" + ": " + queue[x].title + "\n")
             if x % 10 == 0 and x != 0:
                 await ctx.send(message)
                 message = ""

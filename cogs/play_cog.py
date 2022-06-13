@@ -4,7 +4,7 @@ import threading
 
 import discord.ext.commands.errors
 from discord.ext import commands
-from .shared import vc, utils, queue,spotify_queuer
+from .shared import vc, utils, queue,spotify_queuer, Song
 
 
 class Play(commands.Cog):
@@ -31,20 +31,22 @@ class Play(commands.Cog):
                     tracks = await spotify_queuer.play_playlist(sound)
                     url = utils.get_url(tracks[0])
                     title = utils.get_title(url)
+                    song = Song.Song(url, title)
                     tracks.remove(tracks[0])
                     for val in tracks:
                         url_thread = threading.Thread(target=utils.add_urls, name="Url Adder",
                                                        args=([val],))
                         url_thread.start()
                     if url is not None:
-                        await vc.play(ctx.author.voice.channel, title)
+                        await vc.play(ctx.author.voice.channel, song)
 
                 else:
                     track = await spotify_queuer.play_song(sound)
                     url = utils.get_url(track)
                     title = utils.get_title(url)
+                    song = Song.Song(url, title)
                     if url is not None:
-                        await vc.play(ctx.author.voice.channel, title)
+                        await vc.play(ctx.author.voice.channel, song)
 
 
 
@@ -52,9 +54,9 @@ class Play(commands.Cog):
 
                 url = utils.get_url(sound)
                 if url is not None:
-                    title = utils.get_title(url)
-                    await ctx.send("Queuing " + title)
-                    await vc.play(ctx.author.voice.channel, url)
+                    song = Song.Song(url=url, title=None)
+                    await ctx.send("Queuing " + song.title)
+                    await vc.play(ctx.author.voice.channel, song)
 
 
         else:
@@ -68,9 +70,10 @@ class Play(commands.Cog):
                 url = utils.get_url(sound)
                 if url is not None:
                     await ctx.send("Result Found. Preparing...")
-                    title = utils.get_title(url)
-                    await ctx.send("Queuing " + title)
-                    await vc.play(ctx.author.voice.channel, title)
+                    song = Song.Song(url=url, title=None)
+                    await ctx.send("Queuing " + song.title)
+                    print(song.url)
+                    await vc.play(ctx.author.voice.channel, song)
                 else:
                     await ctx.send("Couldn't find the song")
 
@@ -125,8 +128,9 @@ class Play(commands.Cog):
         url = utils.get_url(sound)
         if url is not None:
             title = utils.get_title(url)
-            queue.queue.insert(1, title)
-            utils.download(url, False)
+            song = Song(url, title)
+            queue.queue.insert(1, song)
+            utils.download(song.url, False)
         else:
             await ctx.send("Could not find song to place ontop")
 
@@ -141,7 +145,7 @@ class Play(commands.Cog):
             queue.queue[index1] = queue.queue[index2]
             queue.queue[index2] = temp
             if index2 == 1:
-                url = utils.get_url(queue.queue[1])
+                url = queue.queue[1].url
                 if url is not None:
                     utils.download(url, False)
             await ctx.send("Moved Successfully")

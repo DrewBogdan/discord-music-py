@@ -36,7 +36,7 @@ async def play(channel, name):
                     conn = await channel.connect()
                 except discord.errors.ClientException:
                     pass
-                cur_file = ("sounds/" + queue.get_top() + ".mp3")
+                cur_file = ("sounds/" + queue.get_top().title + ".mp3")
                 # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
                 conn.play(discord.FFmpegPCMAudio(cur_file))
                 # check every half second if the audio is done playing
