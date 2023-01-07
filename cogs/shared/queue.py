@@ -33,7 +33,7 @@ def add_to_queue(song):
 
 async def remove_from_queue(index):
     async with Q_LOCK:
-        val = queue[index]
+        val = queue[index].title
         queue.remove(queue[index])
         if val != "minecraft" and val != "music" and val != "creeper" and val != "ugly":
             try:

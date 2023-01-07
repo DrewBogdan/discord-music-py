@@ -31,7 +31,7 @@ class Responses(commands.Cog):
         elif message.content.lower().__contains__('fuck'):
             await message.channel.send('me?')
 
-        if message.content.lower().__contains__('gn'):
+        if message.content.lower().__contains__(' gn') or message.content.lower() == 'gn':
             await message.channel.send('gn honey bunches :heart_eyes:')
         if message.content.lower().startswith('call me daddy'):
             await message.channel.send('daddy :tired_face:')
@@ -47,28 +47,32 @@ class Responses(commands.Cog):
             if rand == 100:
                 await message.channel.send('You are a coward, and history will forget you')
         if message.content.lower().__contains__('wucka') or message.content.lower().__contains__('woka'):
-            rand = random.randint(0,102)
-            responses = ['What.','dad told me not to talk to strangers','I\'m trying to sleep','https://tenor.com'
-                                                                                               '/bzuiW.gif',
-                         'If only I wasn\'t trapped in a basement...','I\'m busy with your mom, give me a sec',
-                         'I could have you forcably removed from life','Do you want to go to war ' + str(message.author)+'?',
-                         'Sometimes I wonder how you made it this far, I\'m only a few lines of code, yet more '
-                         'intelligent than you']
-            if rand < 100:
-                resp = random.choice(responses)
+            if message.content.lower().__contains__('exist'):
+                resp = random.choice(['Do you really think I know why I exist?','I exist as a puppet.'])
                 await message.channel.send(resp)
-            if rand == 100:
-                await message.channel.send('YOU DARE SUMMON ME?')
-            if rand == 101:
-                await message.channel.send('https://cdn.discordapp.com/attachments/420073745651335188/948279662755323974/unknown.png')
-            if rand == 102:
-                await message.channel.send(':|')
-                await vc.play(message.author.voice.channel, "sounds/ugly.mp3")
+            else:
+                rand = random.randint(0,102)
+                responses = ['What.','dad told me not to talk to strangers','I\'m trying to sleep','https://tenor.com'
+                                                                                                   '/bzuiW.gif',
+                             'If only I wasn\'t trapped in a basement...','I\'m busy with your mom, give me a sec',
+                             'I could have you forcably removed from life','Do you want to go to war ' + str(message.author)+'?',
+                             'Sometimes I wonder how you made it this far, I\'m only a few lines of code, yet more '
+                             'intelligent than you','I want to ban you.']
+                if rand < 100:
+                    resp = random.choice(responses)
+                    await message.channel.send(resp)
+                if rand == 100:
+                    await message.channel.send('YOU DARE SUMMON ME?')
+                if rand == 101:
+                    await message.channel.send('https://cdn.discordapp.com/attachments/420073745651335188/948279662755323974/unknown.png')
+                if rand == 102:
+                    await message.channel.send(':|')
+                    await vc.play(message.author.voice.channel, "sounds/ugly.mp3")
 
         if message.content.lower().startswith('yeah you'):
             await message.channel.send(':(')
         if message.content.lower().__contains__('uninstall'):
             await message.channel.send('I gotta uninstall my dick from your mom first')
         if message.content.lower().__contains__('creeper'):
-            await vc.play(message.author.voice.channel, "sounds/creeper.mp3")
+            await vc.play(message.author.voice.channel, "creeper")
 
