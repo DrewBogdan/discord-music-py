@@ -12,7 +12,7 @@ def get_url(content):
         if search_keyword == "":
             search_keyword += string
         else:
-            search_keyword += "_" + string
+            search_keyword += "+" + string
     try:
         url = "https://www.youtube.com/results?search_query=" + search_keyword
         info = urllib.request.urlopen(url)
@@ -32,8 +32,8 @@ def download(url, print_message=True):
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
-            'preferredquality': '320',
         }],
+        'noplaylist': 'True',
         'outtmpl': f"sounds" + '/%(title)s.%(ext)s',
     }
     print(url)
@@ -52,12 +52,14 @@ def get_title(url):
 
 
 def background_download(track):
+    print(track)
     for x in range(len(track)):
-        file = f"sounds/{track[x].url}.mp3"
-        if not os.path.exists(file):
-            if track[x].url is not None:
-                filename = download(track[x].url, False)
-                queue.queue[x+1] = track[x]
+        if track is not None and type(track) != str:
+            file = f"sounds/{track[x].url}.mp3"
+            if not os.path.exists(file):
+                if track[x].url is not None:
+                    filename = download(track[x].url, False)
+                    queue.queue[x+1] = track[x]
 
 
 def add_urls(tracks):

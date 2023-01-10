@@ -26,7 +26,9 @@ class Play(commands.Cog):
         elif "https" in sound:
             # gets the link downloaded
             if "open.spotify.com" in sound:
+
                 if "playlist" in sound:
+                    print("DEBUG: spotify playlist")
 
                     tracks = await spotify_queuer.play_playlist(sound)
                     url = utils.get_url(tracks[0])
@@ -41,10 +43,15 @@ class Play(commands.Cog):
                         await vc.play(ctx.author.voice.channel, song)
 
                 else:
+                    print("DEBUG: spotify song")
+                    # gets the track name from the spotify link
                     track = await spotify_queuer.play_song(sound)
+                    # takes track name and gets youtube url
                     url = utils.get_url(track)
+                    # gets title from url
                     title = utils.get_title(url)
                     song = Song.Song(url, title)
+                    print(song.url)
                     if url is not None:
                         await vc.play(ctx.author.voice.channel, song)
 

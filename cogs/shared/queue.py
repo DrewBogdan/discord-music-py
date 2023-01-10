@@ -20,7 +20,7 @@ def add_to_queue(song):
     if len(queue) < 2:
         queue.append(song)
 
-        if song.url is not None:
+        if type(song) != str and song.url is not None:
             print(song.url)
             file = utils.download(song.url)
             if len(queue) == 1:
@@ -33,7 +33,10 @@ def add_to_queue(song):
 
 async def remove_from_queue(index):
     async with Q_LOCK:
-        val = queue[index].title
+        if type(queue[index]) == str:
+            val = queue[index]
+        else:
+            val = queue[index].title
         queue.remove(queue[index])
         if val != "minecraft" and val != "music" and val != "creeper" and val != "ugly":
             try:
@@ -65,7 +68,9 @@ def get_top():
             download_thread_stag = threading.Thread(target=utils.background_download, name="Downloader", args=([queue[1], queue[2], queue[3]],))
             download_thread_stag.start()
 
-        return queue[0]
+        if type(queue[0]) == str:
+            return queue[0]
+        return queue[0].title
     return None
 
 
@@ -75,9 +80,15 @@ async def print_queue(ctx):
         for x in range(len(queue)):
             if x == 0:
                 # (os.path.splitext(queue[x])[0]).split("sounds/")[1] Old style of queue
-                message += ("**Current Song:** " + queue[x].title + "\n")
+                if type(queue[x]) == str:
+                    message += ("**Current Song:** " + queue[x] + "\n")
+                else:
+                    message += ("**Current Song:** " + queue[x].title + "\n")
             else:
-                message += ("**" + str(x) + "**" + ": " + queue[x].title + "\n")
+                if type(queue[x]) == str:
+                    message += ("**" + str(x) + "**" + ": " + queue[x] + "\n")
+                else:
+                    message += ("**" + str(x) + "**" + ": " + queue[x].title + "\n")
             if x % 10 == 0 and x != 0:
                 await ctx.send(message)
                 message = ""

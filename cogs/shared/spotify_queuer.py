@@ -54,6 +54,7 @@ async def get_track(id):
 async def play_song(url):
     id = await parser(url)
     track = await get_track(id)
+    print("Track",track)
     return track
 
 async def play_playlist(url):

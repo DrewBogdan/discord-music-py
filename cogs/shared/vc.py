@@ -9,6 +9,8 @@ import discord
 
 VC_LOCK = asyncio.Lock()
 
+FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+
 async def play(channel, name):
     """
     Connects to the given voice channel, playing the given .mp3 file
@@ -36,9 +38,10 @@ async def play(channel, name):
                     conn = await channel.connect()
                 except discord.errors.ClientException:
                     pass
-                cur_file = ("sounds/" + queue.get_top().title + ".mp3")
+                cur_file = ("sounds/" + queue.get_top() + ".mp3")
                 # executable=("C:\Program Files (x86)\\ffmpeg-master-latest-win64-gpl\\bin"))
-                conn.play(discord.FFmpegPCMAudio(cur_file))
+                source = await discord.FFmpegOpusAudio.from_probe(cur_file)
+                conn.play(source)
                 # check every half second if the audio is done playing
                 while conn.is_playing():
                     await asyncio.sleep(0.5)
